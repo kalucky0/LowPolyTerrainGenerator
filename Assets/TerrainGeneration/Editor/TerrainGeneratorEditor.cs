@@ -14,6 +14,8 @@ public class TerrainGeneratorEditor : Editor {
 
 	private Vector2i Resolution;
 
+    private Biome[] oldBiomes;
+
 	void Awake() {
 		Target = (TerrainGenerator)target;
         if (Target.TerrainSystem != null)
@@ -43,11 +45,12 @@ public class TerrainGeneratorEditor : Editor {
 		Inspect();
 		if(GUI.changed) {
 			EditorUtility.SetDirty(Target);
-			Target.TerrainSystem.SetHeightMap(Target.TerrainSystem.CreateHeightMap(
-				Target.Seed, Target.Scale, Target.Octaves, Target.Persistance, Target.Lacunarity, Target.FalloffStrength, Target.FalloffRamp, Target.FalloffRange, Target.Offset, Target.HeightMultiplier, Target.HeightCurve
-			));
-			Target.TerrainSystem.SetColorMap(Target.TerrainSystem.CreateColorMap());
-		}
+            if (oldBiomes != Target.TerrainSystem.Biomes)
+            {
+                oldBiomes = Target.TerrainSystem.Biomes;
+                Target.TerrainSystem.SetColorMap(Target.TerrainSystem.CreateColorMap());
+            }
+        }
 	}
 
 	private void Inspect() {
@@ -56,6 +59,7 @@ public class TerrainGeneratorEditor : Editor {
 		InspectTools();
 		if(GUILayout.Button("Reset")) {
 			Target.TerrainSystem.Reinitialise();
+            
 		}
 	}
 
@@ -114,7 +118,8 @@ public class TerrainGeneratorEditor : Editor {
 					Target.TerrainSystem.SetBiomeStartHeight(i, start);
 					Target.TerrainSystem.SetBiomeEndHeight(i, end);
 				}
-				if(GUILayout.Button("Add Biome")) {
+                
+                if (GUILayout.Button("Add Biome")) {
 					System.Array.Resize(ref Target.TerrainSystem.Biomes, Target.TerrainSystem.Biomes.Length+1);
 					Target.TerrainSystem.Biomes[Target.TerrainSystem.Biomes.Length-1] = new Biome();
 				}
@@ -123,15 +128,21 @@ public class TerrainGeneratorEditor : Editor {
 						System.Array.Resize(ref Target.TerrainSystem.Biomes, Target.TerrainSystem.Biomes.Length-1);
 					}
 				}
+                if (GUILayout.Button("Generate Biomes")) {
+					if(Target.TerrainSystem.Biomes.Length > 0) {
+                        Target.TerrainSystem.SetColorMap(Target.TerrainSystem.CreateColorMap());
+                    }
+				}
 			}
-
+            GUILayout.Space(10);
 			if(GUILayout.Button("Generate")) {
 				Target.TerrainSystem.SetHeightMap(Target.TerrainSystem.CreateHeightMap(
 					Target.Seed, Target.Scale, Target.Octaves, Target.Persistance, Target.Lacunarity, Target.FalloffStrength, Target.FalloffRamp, Target.FalloffRange, Target.Offset, Target.HeightMultiplier, Target.HeightCurve
 				));
 				Target.TerrainSystem.SetColorMap(Target.TerrainSystem.CreateColorMap());
 			}
-		}
+            GUILayout.Space(2);
+        }
 	}
 
 	private void InspectTools() {
@@ -142,6 +153,7 @@ public class TerrainGeneratorEditor : Editor {
 			Target.ToolType = (ToolType)EditorGUILayout.EnumPopup("Type", Target.ToolType);
 			Target.ToolSize = EditorGUILayout.FloatField("Size", Target.ToolSize);
 			Target.ToolStrength = EditorGUILayout.FloatField("Strength", Target.ToolStrength);
+            if(Target.ToolType == ToolType.Brush)
 			Target.ToolColor = EditorGUILayout.ColorField("Color", Target.ToolColor);
 		}
 	}

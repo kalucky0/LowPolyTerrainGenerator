@@ -19,8 +19,8 @@ public class TerrainGenerator : MonoBehaviour {
 	public TerrainSystem TerrainSystem = null;
 
 	//Terrain Generator
-	public int Seed = 1;
-	public float Scale = 25f;
+	public int Seed = 13;
+	public float Scale = 10f;
 	public int Octaves = 10;
 	public float Persistance = 0.25f;
 	public float Lacunarity = 3.0f;
@@ -28,9 +28,12 @@ public class TerrainGenerator : MonoBehaviour {
 	public float FalloffRamp = 3.0f;
 	public float FalloffRange = 2.0f;
 	public Vector2 Offset = Vector2.zero;
-	public float HeightMultiplier = 25f;
-	public AnimationCurve HeightCurve = new AnimationCurve();
-
+	public float HeightMultiplier = 50f;
+    public AnimationCurve HeightCurve = new AnimationCurve(new Keyframe[] {
+        new Keyframe(0,0,0,0,0,0),
+        new Keyframe(1, 1, 2, 2, 0, 0)
+    });
+    
     [MenuItem("GameObject/3D Object/Low Poly Terrain")]
     private static void CreateTerrainObject()
     {
