@@ -5,35 +5,36 @@ using UnityEditor;
 #endif
 
 [ExecuteInEditMode]
-public class TerrainGenerator : MonoBehaviour {
+public class TerrainGenerator : MonoBehaviour
+{
 
     public bool isMouseOver = false;
 
-	public ToolType ToolType = ToolType.Normal;
-	public float ToolSize = 25f;
-	public float ToolStrength = 250f;
-	public Color ToolColor = Color.white;
-	
-	public Vector3 MousePosition = Vector3.zero;
+    public ToolType ToolType = ToolType.Normal;
+    public float ToolSize = 25f;
+    public float ToolStrength = 250f;
+    public Color ToolColor = Color.white;
 
-	public TerrainSystem TerrainSystem = null;
+    public Vector3 MousePosition = Vector3.zero;
 
-	//Terrain Generator
-	public int Seed = 13;
-	public float Scale = 10f;
-	public int Octaves = 10;
-	public float Persistance = 0.25f;
-	public float Lacunarity = 3.0f;
-	public float FalloffStrength = 1.0f;
-	public float FalloffRamp = 3.0f;
-	public float FalloffRange = 2.0f;
-	public Vector2 Offset = Vector2.zero;
-	public float HeightMultiplier = 50f;
+    public TerrainSystem terrainSystem = null;
+
+    //Terrain Generator
+    public int Seed = 13;
+    public float Scale = 10f;
+    public int Octaves = 10;
+    public float Persistance = 0.25f;
+    public float Lacunarity = 3.0f;
+    public float FalloffStrength = 1.0f;
+    public float FalloffRamp = 3.0f;
+    public float FalloffRange = 2.0f;
+    public Vector2 Offset = Vector2.zero;
+    public float HeightMultiplier = 50f;
     public AnimationCurve HeightCurve = new AnimationCurve(new Keyframe[] {
         new Keyframe(0,0,0,0,0,0),
         new Keyframe(1, 1, 2, 2, 0, 0)
     });
-    
+
     [MenuItem("GameObject/3D Object/Low Poly Terrain")]
     private static void CreateTerrainObject()
     {
@@ -42,7 +43,16 @@ public class TerrainGenerator : MonoBehaviour {
         go.AddComponent<TerrainGenerator>();
     }
 
-    void OnDrawGizmosSelected() {
+    private void OnDrawGizmos()
+    {
+        if(terrainSystem != null && terrainSystem.terrain == null)
+        {
+            terrainSystem.terrain = transform.GetChild(0);
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
         if (isMouseOver)
         {
             Gizmos.color = new Color(0f, 1f, 1f, 0.75f);
@@ -50,27 +60,32 @@ public class TerrainGenerator : MonoBehaviour {
         }
     }
 
-	void Awake() {
-		if(TerrainSystem != null && !TerrainSystem.isInitialized) {
-			TerrainSystem.Initialise(gameObject.GetComponent<TerrainGenerator>());
-		}
-	}
-
-	void Update() {
-        if (TerrainSystem != null && !TerrainSystem.isInitialized)
+    void Awake()
+    {
+        if (terrainSystem != null && !terrainSystem.isInitialized)
         {
-            TerrainSystem.Initialise(gameObject.GetComponent<TerrainGenerator>());
+            terrainSystem.Initialise(gameObject.GetComponent<TerrainGenerator>());
         }
-        if (TerrainSystem != null)
-            TerrainSystem.Update();
-	}
+    }
 
-	void OnDestroy() {
-		#if UNITY_EDITOR
-		if((EditorApplication.isPlayingOrWillChangePlaymode || !Application.isPlaying) && (!EditorApplication.isPlayingOrWillChangePlaymode || Application.isPlaying)) {
-			DestroyImmediate(TerrainSystem.Terrain.gameObject);
-		}
-		#endif
-	}
+    void Update()
+    {
+        if (terrainSystem != null && !terrainSystem.isInitialized)
+        {
+            terrainSystem.Initialise(gameObject.GetComponent<TerrainGenerator>());
+        }
+        if (terrainSystem != null)
+            terrainSystem.Update();
+    }
+
+    void OnDestroy()
+    {
+#if UNITY_EDITOR
+        if ((EditorApplication.isPlayingOrWillChangePlaymode || !Application.isPlaying) && (!EditorApplication.isPlayingOrWillChangePlaymode || Application.isPlaying))
+        {
+            DestroyImmediate(terrainSystem.terrain.gameObject);
+        }
+#endif
+    }
 
 }

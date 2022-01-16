@@ -12,24 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 165a4190a5e1e49f5a6f15668e367a9e, type: 3}
   m_Name: TerrainSystem
   m_EditorClassIdentifier: 
-  Generator: {fileID: 0}
-  Terrain: {fileID: 0}
-  Size: {x: 500, y: 500}
-  Resolution:
+  generator: {fileID: 0}
+  terrain: {fileID: 0}
+  size: {x: 500, y: 500}
+  resolution:
     x: 100
     y: 100
-  Meshes: []
-  Vertices: []
-  VertexDistance: {x: 0, y: 0}
-  VertexData: []
-  TriangleData: 
-  UVData: []
-  HeightMap: []
-  ColorMap: []
-  Material: {fileID: 0}
-  Texture: {fileID: 0}
-  Interpolation: 0.5
-  FilterMode: 2
-  Biotopes: []
-  ChunkSize: 6000
+  meshes: []
+  vertices: []
+  vertexDistance: {x: 0, y: 0}
+  vertexData: []
+  triangleData: 
+  uvData: []
+  heightMap: []
+  colorMap: []
+  material: {fileID: 0}
+  texture: {fileID: 0}
+  interpolation: 0.5
+  filterMode: 2
+  biomes: []
+  chunkSize: 6000
   isInitialized: 0
